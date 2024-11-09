@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mac address Formatter</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- jQuery for AJAX -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="bg-light">
+
+<div class="container my-5 w-50">
+    <div class="card shadow-sm">
+        <div class="card-header bg-secondary text-white">
+            <h2 class="card-title mb-0">Mac address Formatter</h2>
+        </div>
+        <div class="card-body">
+            <form id="text-form" class="row g-3">
+                <div class="col-12">
+                    <label for="text-input" class="form-label">Enter Mac address:</label>
+                    <input type="text" id="text-input" name="text" class="form-control"
+                           placeholder="e.g., fd:1d:2d:3f:2c:1a" required>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary w-100">Format</button>
+                </div>
+            </form>
+        </div>
+        <div class="card-footer bg-light">
+            <h3 class="h5">Formated Mac address:</h3>
+            <p id="transformed-text" class="text-success fw-bold"></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#text-form').on('submit', function (event) {
+            event.preventDefault();  // Prevent the form from submitting normally
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url "format-text" %}',
+                data: {
+                    'text': $('#text-input').val(),
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function (response) {
+                    $('#transformed-text').text(response.transformed_text);
+                },
+                error: function (xhr, status, error) {
+                    $('#transformed-text').text("Error occurred while transforming text.").addClass("text-danger");
+                }
+            });
+        });
+    });
+</script>
+
+<!-- Bootstrap JS and Popper.js (optional for Bootstrap components) -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+</body>
+</html>
